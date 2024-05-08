@@ -1,35 +1,57 @@
 const API_URL = 'https://jsonplaceholder.typicode.com/posts';
+//random data
+//asynchronous function with parameter query
 async function fetchData(query = '') {
+    //GET request to API endpoint
   const response = await fetch(`${API_URL}?q=${query}`);
+  //JSON format of http response
   const data = await response.json();
+  //return json format from the api
   return data;
 }
 
-async function postData(newPost) {
+//asynchronous function called contentData with parameter newPost
+async function contentData(newPost) {
+    //http post request to the api endpoint
   const response = await fetch(API_URL, {
     method: 'POST',
+    //the request contains json data
     headers: {
       'Content-Type': 'application/json'
     },
+    //convert contentData parameter into a JSON string 
     body: JSON.stringify(newPost)
   });
+  //conver to json format the response of te http
   const data = await response.json();
+  //return json format
   return data;
 }
 
+//div created, then inside teh div are added the title and body, divs are styled to differentiate from other divs
+
+//render posts from api_url with body and title
 function renderGallery(container, data) {
+    //clean the content of container
   container.innerHTML = '';
+  //iterate over each item in data array
   data.forEach(item => {
+    //single post
     const postElement = document.createElement('div');
+    //each list contains a class called post
     postElement.classList.add('post');
+    //the post contains the title and the body of the post
     postElement.innerHTML = `
       <h2>${item.title}</h2>
       <p>${item.body}</p>
     `;
+    //the post is added to the container element
     container.appendChild(postElement);
   });
 }
 
+
+//event listener 
 document.addEventListener('DOMContentLoaded', async () => {
   const gallery = document.getElementById('gallery');
   
@@ -46,8 +68,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     renderGallery(gallery, searchData);
   });
 
-  // Example of user manipulation with post request
-  // Assuming there's a form with id="newPostForm" and input fields for title and body
   const newPostForm = document.getElementById('newPostForm');
   newPostForm.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -56,7 +76,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       title: formData.get('title'),
       body: formData.get('body')
     };
-    await postData(newPost);
+    await contentData(newPost);
     // After successful post, refresh the gallery
     const refreshedData = await fetchData();
     renderGallery(gallery, refreshedData);
